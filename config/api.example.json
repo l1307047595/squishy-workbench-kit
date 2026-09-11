@@ -1,0 +1,10 @@
+{
+  "_说明": "复制成 config/api.json 后填入你自己的 api_key。该文件不进 git，各人自备。",
+  "base_url": "https://direct-api.cangyuansuanli.cn/v1",
+  "api_key": "在此填入你自己的中转站 key",
+  "model": "gpt-image-2",
+  "model_locked": true,
+  "default_size": "1024x1024",
+  "default_quality": "high",
+  "timeout": 300
+}
