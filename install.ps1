@@ -91,9 +91,9 @@ foreach ($sd in $skillDirs) {
 $parent = Split-Path -Parent $CfgPath
 if (-not (Test-Path $parent)) { New-Item -ItemType Directory -Path $parent -Force | Out-Null }
 $cfg = [ordered]@{
-    workbench_dir = (Resolve-Path $WorkbenchDir).Path
-    skills_repo   = (Resolve-Path $RepoDir).Path
-    update_script = (Join-Path (Resolve-Path $RepoDir).Path "update.ps1")
+    workbench_dir = (Get-Item -LiteralPath $WorkbenchDir).FullName
+    skills_repo   = (Get-Item -LiteralPath $RepoDir).FullName
+    update_script = (Join-Path (Get-Item -LiteralPath $RepoDir).FullName "update.ps1")
     updated_at    = (Get-Date).ToString("s")
 }
 $cfg | ConvertTo-Json | Set-Content -Encoding UTF8 -Path $CfgPath

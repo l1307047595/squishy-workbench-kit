@@ -31,12 +31,18 @@ Say "workbench = $wb"
 # ---------------------------------------------------------------- 1. pull
 if (-not (Test-Path (Join-Path $RepoDir ".git"))) { Fail "'$RepoDir' is not a git repo - re-clone it" }
 
-$before = (& git -C $RepoDir rev-parse --short HEAD) 2>$null
-& git -C $RepoDir pull --ff-only
-if ($LASTEXITCODE -ne 0) { Fail "git pull failed (code $LASTEXITCODE) - check network / remote / local edits" }
-$after = (& git -C $RepoDir rev-parse --short HEAD) 2>$null
-
-if ($before -eq $after) { Say "already up to date ($after)" } else { Say "updated: $before -> $after" }
+$remote = ((& git -C $RepoDir remote) 2>$null) -join ""
+if (-not $remote) {
+    Warn "no git remote configured - skipping pull (files only)"
+    $before = "local"
+    $after  = "local"
+} else {
+    $before = (& git -C $RepoDir rev-parse --short HEAD) 2>$null
+    & git -C $RepoDir pull --ff-only
+    if ($LASTEXITCODE -ne 0) { Fail "git pull failed (code $LASTEXITCODE) - check network / remote / local edits" }
+    $after = (& git -C $RepoDir rev-parse --short HEAD) 2>$null
+    if ($before -eq $after) { Say "already up to date ($after)" } else { Say "updated: $before -> $after" }
+}
 
 # ---------------------------------------------------------------- 2. sync files
 $nRules = 0

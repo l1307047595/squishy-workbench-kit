@@ -1,7 +1,7 @@
 {
-  "_说明": "复制成 config/api.json 后填入你自己的 api_key。该文件不进 git，各人自备。",
+  "_note": "Copy this file to config/api.json, then put YOUR OWN api_key in it. api.json is gitignored - one key per person, never share it.",
   "base_url": "https://direct-api.cangyuansuanli.cn/v1",
-  "api_key": "在此填入你自己的中转站 key",
+  "api_key": "PUT-YOUR-OWN-KEY-HERE",
   "model": "gpt-image-2",
   "model_locked": true,
   "default_size": "1024x1024",
