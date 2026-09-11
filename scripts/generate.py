@@ -6,7 +6,7 @@
 用法:
     python scripts/generate.py --check                          # 零消耗探活（配置+网络，不出图不扣费）
     python scripts/generate.py --prompt-file prompts/x.txt --ref ref/x.png --name x_main
-    python scripts/generate.py --prompt "英文提示词 //" --outdir outputs --name demo --size 1024x1024
+    python scripts/generate.py --prompt "英文提示词 //" --name demo     # 仅调试一行短文本，交付一律 --prompt-file
 
 相对原版（Freebuff/WorkBuddy 版）的优化:
     1. --prompt-file：长提示词从文件读取，绕开 PowerShell 引号/括号/换行转义大坑
@@ -120,15 +120,28 @@ def assert_public_url(u: str, what: str):
             sys.exit(f"[拒绝] {what} 指向非公网地址: {host} ({a})")
 
 
+def fetch_image_bytes(url: str, what: str):
+    """兵部#3/#9：校验→抓取一体。拒重定向（防 302→内网 SSRF 绕过），限 25MB（防 OOM）。"""
+    assert_public_url(url, what)
+    r = requests.get(url, timeout=120, allow_redirects=False, stream=True)
+    if r.is_redirect or 300 <= r.status_code < 400:
+        sys.exit(f"[拒绝] {what} 返回重定向（可能是 SSRF 绕过）——请改用直链 URL 或本地文件")
+    r.raise_for_status()
+    size, chunks = 0, []
+    for chunk in r.iter_content(65536):
+        size += len(chunk)
+        if size > 25 * 1024 * 1024:
+            sys.exit(f"[失败] {what} 超过 25MB 上限，拒绝接收")
+        chunks.append(chunk)
+    return b"".join(chunks), r.headers.get("Content-Type", "image/png")
+
+
 def to_data_url(ref: str) -> str:
     if ref.startswith(("http://", "https://", "data:")):
         if ref.startswith("data:"):
             return ref
-        assert_public_url(ref, "--ref URL")
-        r = requests.get(ref, timeout=60)
-        r.raise_for_status()
-        mime = r.headers.get("Content-Type", "image/png").split(";")[0].strip()
-        return "data:{};base64,{}".format(mime, base64.b64encode(r.content).decode())
+        raw, ctype = fetch_image_bytes(ref, "--ref URL")
+        return "data:{};base64,{}".format(ctype.split(";")[0].strip(), base64.b64encode(raw).decode())
     p = Path(ref)
     if not p.exists():
         sys.exit(f"[参数错误] 参考图不存在: {ref}")
@@ -161,13 +174,10 @@ def save_image(item: dict, outdir: Path, name: str, idx: int, total: int) -> Pat
         out.write_bytes(raw)
         return out
     if item.get("url"):
-        assert_public_url(item["url"], "响应图片 URL")  # 兵部#4：不信任中转站响应里的地址
-        r = requests.get(item["url"], timeout=120)
-        r.raise_for_status()
-        ctype = r.headers.get("Content-Type", "")
+        raw, ctype = fetch_image_bytes(item["url"], "响应图片 URL")  # 兵部#4：不信任中转站响应里的地址
         ext = "jpg" if ("jpeg" in ctype or "jpg" in ctype) else ("webp" if "webp" in ctype else "png")
         out = unique_target(outdir, name, suffix, ext)
-        out.write_bytes(r.content)
+        out.write_bytes(raw)
         return out
     raise RuntimeError("响应中既无 b64_json 也无 url: " + json.dumps(item)[:300])
 
@@ -182,6 +192,10 @@ def verify_output(p: Path, expect_size: str):
     ok = size_kb > 50  # 小于 50KB 基本是坏图
     if not ok:
         line += "  ⚠ 文件过小疑似坏图"
+    if not HAS_PIL:
+        # 兵部#10：无 PIL → F15 宽高比核验失效，不得静默放行（退出码非 0 交人裁决）
+        print(f"[核验] {p.name}  {size_kb:.0f}KB  ⚠ 缺 PIL，无法验分辨率/宽高比（F15 闸失效）")
+        return False
     if HAS_PIL:
         try:
             with Image.open(p) as im:
@@ -255,7 +269,10 @@ def main():
     ap.add_argument("--dry-run", action="store_true", help="只打印将要发送的请求概要，不实际提交")
     args = ap.parse_args()
 
-    cfg = load_config(Path(args.config))
+    cfg_path = Path(args.config)
+    if not cfg_path.is_absolute():
+        cfg_path = ROOT / cfg_path
+    cfg = load_config(ensure_in_ws(cfg_path, "--config"))  # 兵部#8：防 --config 指向区外恶意配置（base_url 外移=素材外泄）
     if args.check:
         sys.exit(do_check(cfg))
 
@@ -266,6 +283,7 @@ def main():
             pf = ROOT / args.prompt_file
         if not pf.exists():
             sys.exit(f"[参数错误] 提示词文件不存在: {args.prompt_file}")
+        pf = ensure_in_ws(pf, "--prompt-file")  # 兵部#1：防越界读任意文件当提示词外发
         args.prompt_text = pf.read_text(encoding="utf-8-sig").strip()  # 刑部#5：防 BOM 混入触发非ASCII误报
     elif args.prompt:
         args.prompt_text = args.prompt
@@ -284,12 +302,13 @@ def main():
     hits = [b for b in banned if b in args.prompt_text.lower()]
     if hits:
         print(f"[警告] 提示词含禁用词: {hits} —— 交付前必改（终审清单第七节；F3/F8 已因 SQUISH 变体复发 2 次）")
-    # 模型锁定（用户明令：仅 gpt-image-2，禁一切变体）
-    if args.model and cfg.get("model_locked") and args.model != cfg["model"]:
-        sys.exit(f"[拒绝] 用户明令仅允许 {cfg['model']}，禁止切换变体（收到的 --model={args.model}）")
-    # 文件名安全检查（P4 教训：括号/空格炸命令行；兵部#1：禁路径穿越字符）
-    if any(c in args.name for c in ' ()[]<>|&;/\\*"?,') or ".." in args.name:
-        sys.exit(f"[参数错误] --name 只允许字母/数字/下划线/连字符: {args.name!r}")
+    # 模型白名单锁（09-10 圣裁：按任务选模型；08 旧令：禁分辨率变体）
+    allowed = cfg.get("model_allowed") or [cfg["model"]]
+    if args.model and cfg.get("model_locked") and args.model not in allowed:
+        sys.exit(f"[拒绝] 允许名单 {allowed}，其余（含 -1k/-2k/-4k 变体）禁用（收到的 --model={args.model}）")
+    # 文件名安全检查（黑名单式：允许中文交付名，但禁空格/括号/路径符号；兵部#1：禁路径穿越）
+    if any(c in args.name for c in ' ()[]<>|&;/\\*"?,#%!\n') or ".." in args.name:
+        sys.exit(f"[参数错误] --name 禁空格/括号/路径符号: {args.name!r}")
 
     url, headers, body_kw, size = build_request(args, cfg)
     mode = "edits-multipart" if args.ref and args.endpoint == "edits" else "json"

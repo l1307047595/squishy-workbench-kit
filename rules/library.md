@@ -222,3 +222,70 @@
 - 通过版：gapple_main（砧板陈列）/ gapple_promo1（ONE APPLE ENDLESS SQUEEZES+徽章）/ gapple_promo2（果篮构图）/ gapple_usage（捏苹果桌面）
 - 文案体系：FRESH SQUEEZE / SOFT-BOUNCY-REALISTIC / ONE APPLE ENDLESS SQUEEZES / 1 PCS-FRESH PICK / STRESS FREE ZONE / FRESH FROM THE ORCHARD / The Juiciest Way To Chill / SO GOOD! / SQUEEZE THE STRESS AWAY
 - 风格基调句：苹果绿+奶油白+蜜瓜橙 / 果园晨光 / 8K 商业摄影 / 圆润无衬线英文字
+
+## 2026-09-10 · 圣诞四件套闪光液体公仔「水晶球小队 SNOW GLOBE SQUAD」套图（节日款，用户 A 案钦定入库）
+
+### 套图信息
+- 参考图：ref/xmas48_ref.png（白底 2×2 拼格：绿圣诞树仔+黑礼帽雪人仔+棕角驯鹿仔+红帽白须圣诞公仔；同模圆胖异头雕+同色系透明闪片液体壳+**原厂塑型脸**）
+- 创意核心：商品壳内闪片液体外延成世界——整场圣诞装进一颗巨型玻璃水晶球（球内糖霜雪丘+飘雪花片金粉+球口红缎带金铃+球外暖木桌串灯 bokeh）
+- 风格基调句：Consistent style: midnight-blue, snow-white and warm-gold Christmas night palette, soft glowing light inside the globe with warm string-light bokeh outside, glass refraction highlights and glossy shimmering sparkle on each translucent glitter shell, cozy playful festive mood, premium high-gloss 3D commercial photography, rounded bold typography.
+- 英文文案：SNOW GLOBE SQUAD / 4 PCS / HOLIDAY IN YOUR HAND / SQUEEZE THE JOY / FOUR FRIENDS, ONE GLOBE / GLITTER FILL / SUPER SOFT / BOUNCES BACK / 4 DESIGNS / GRAB THE SQUAD / WISH YOU MERRY / A SNOWY HUG FOR EVERY DAY
+
+### 通过版（4/4，用户目检钦定）
+| 图 | 文件 | 要点 |
+|---|---|---|
+| 主图 | outputs/9月10日第4个任务的主图.png | 球内雪丘两排错落群像（前树+雪/后驯鹿+圣诞公）；首遇中转站 503 过载×3，实发探路 51.1s 过 |
+| 宣传图1 | outputs/9月10日第4个任务的宣传图1.png | 陈列3+徽章单手捏驯鹿本尊=4；徽章捏压力度偏弱记录在案（可 sunburst 重出未用） |
+| 宣传图2 | outputs/9月10日第4个任务的宣传图2.png | 一字排开+四图标引线零串位（雪花/云/回弹箭/礼盒） |
+| 使用图 | outputs/9月10日第4个任务的实际使用图.png | 左手雪人右手驯鹿拇指压腹+球内树/圣诞公完好=4 |
+
+### 本单沉淀（已入 feedback/AGENTS 者不赘）
+- **形态分诊三查**首次完整运用：自带脸→反向 F2 保脸锁 / 2×2 拼格→禁复刻网格句 / 头身配色一一对应→配对锁，全部写进四份英文稿且逐图生效。
+- **全 SKU 在场硬圣意**：用户批量前追加"所有图片四个商品都要在"——徽章/双手布局靠"被捏=本尊不重复"计数法满足，出图逐张点名数数验收。
+- 提示词存 prompts/xmas48_*.txt；交付起守中文命名序列（本单为首单全程中文名）。
+
+## 2026-09-10 · 花生+白肥皂 2PCS「弧分双色 POD & SOAP」套图（普通捏捏，胶囊珠卖点，皇上 B 案钦定入库）
+
+### 套图信息
+- 参考图：ref/peanut49_ref.png（**产品结构示意图**非商品摆拍：①剖开花生+②放大镜泡标注=卖点展示元素，③完整网纹花生=商品甲，④纯白哑光皂形=商品乙——皇上钦定真身仅③④两件，2PCS）
+- 卖点铁律：**内填胶囊珠=头号卖点，但明令禁止把珠子铺成背景**；卖点交代走金边圆形放大窗 callout（珠只活在窗内）+ 开窗剖面图
+- 风格：B 案「弧分双色」平面海报构成——一道大弧线劈蜜糖橙×雾松绿双纯色面，弧上嵌浅黄油色小圆点，零道具零场景；基调句英译：One large smooth arc curves from the upper-left to the lower-right, dividing the frame into two flat color fields: upper-right honey orange, lower-left misty desaturated pine green. A small pale butter-yellow circle dots the arc at its middle. No scenery, no props, no beads on the background itself.
+- 构图骨架：主图=对角双件+左下窗连花生·右下窗连肥皂（双窗对角，肥皂同等展示内填）/ 宣1=单手拇指深捏花生+窗连被捏处 / 宣2=开窗版双子（花生右叶开口见珠堆冒尖·肥皂前端剖面同配方，弧线放平上橙下绿）/ 使用图=俯拍双手（右握捏花生·左掌托皂）
+- 英文文案：POD & SOAP / 2 PCS · CAPSULE BEADS INSIDE / SLOW REBOUND · PURE SQUEEZE / CAPSULE BEADS INSIDE / 2 PCS · CUT OPEN / TWO IN ONE BOX
+
+### 通过版（主图 v2 + 3，全程 gpt-image-2）
+| 图 | 文件 | 要点 |
+|---|---|---|
+| 主图 | outputs/9月10日第5个任务的主图.png | v1 含 POD & BAR+模型自加红箭头被斥删除；v2 重出 6/6 过 |
+| 宣传图1 | outputs/9月10日第5个任务的宣传图1.png | 162.9s，深凹挤皱到位、五指正常 |
+| 宣传图2 | outputs/9月10日第5个任务的宣传图2.png | 开窗版：珠堆微冒尖不露仁、洒珠零 |
+| 实际使用图 | outputs/9月10日第5个任务的实际使用图.png | 52.2s，左手掌指连接略僵（微瑕存档） |
+| 追加·白底拼装主图 | outputs/9月10日第5个任务的白底拼装主图_v2.png | 仿竞品拼装公式（白底+英雄+剖面+手按+花边卡），仅花生甲；v1 卡标题 "POD & & SOAP" 废删，加拼写锁重出 7/7 过 |
+| 追加·双件白底拼装主图 | outputs/9月10日第5个任务的双件白底拼装主图.png | 皇上纠正套装须同框后补：双英雄（花生+hourglass 形白皂）+手按+双 callout 窗+同款花边卡，54.3s 一发 7/7 |
+
+### 本单沉淀（已入 feedback 者不赘）
+- **"新颖=构图与背景的新颖"**（皇上原话定调）：拟人场景/故事化布景=画蛇添足（胶囊小宿被斥"很奇怪"），几何构成/色面分割/浮雕墙/悬浮圆阶这类**画面语言**才是正解。
+- **肥皂商品形态勿误判**：本单白皂=花生 hourglass 轮廓纯白哑光版（参考④原型），P3 时几乎被误报"第二颗花生"——先对参考图再下结论。
+- 命名两连教：BAR 歧义（酒吧）废→SOAP；文案词避禁词族还要避**语义歧义**，出图前逐词默读。
+- 珠粒卖点三态语言定型：静置态=密封+callout 窗 / 强调态=开窗剖面 / 背景=永不成滩。
+- 提示词存 prompts/peanut49_*.txt；中文稿 prompts/peanut49_draft_cn.md（含修 v2 记录）。
+
+## 2026-09-11 · funbox51 驯鹿+圣诞双仔礼盒「极光棉絮极夜」背景宣传图（单图，C 案钦定入库）
+
+### 单图信息
+- 参考图：ref/funbox51_ref.png（灰白棚底实拍：左驯鹿仔=哑光橙头+原厂塑型脸+透明壳金橙闪片 / 右圣诞仔=红帽白胡+透明粉壳粉金闪片 / 后橙黄渐变瓦楞礼盒，盒顶 SQUISHY·FUN BOX 彩虹 logo 为**镜像反字**）
+- 旨意：只加**可爱背景**，商品不动、零新增文字 → edits 背景替换单图
+- 镜像 logo 处置：沿 santa50 案 09-10 圣裁=原样保留禁翻转/禁重绘（do not un-mirror 句已固化为 edits 模板件）
+- 脸锁（反向 F2）：原厂塑型脸逐像素保留禁改表情；**只有背景角色可有脸**（本单=远处虚化企鹅雏）
+- 背景基调句英译：A fresh blanket of soft silver-white snow powder, milky blue velvet night sky crossed by two or three soft cloud-like aurora ribbons in pastel pink, lavender and pale mint, a large soft butter-yellow moon disc low in one upper corner, sparse round golden dot-stars, two tiny out-of-focus penguin chicks far behind.
+- F11 轮换记录：同型 santa50 已用「糖霜圣诞橱窗」、xmas48 用「水晶球」→ 本单错开走极光夜
+
+### 通过版（单图，gpt-image-2 edits，52.3s 一发入魂）
+| 图 | 文件 | 要点 |
+|---|---|---|
+| 宣传图 | outputs/9月11日第1个任务的宣传图.png | P3 九项全过：三件原位未搬/镜像 logo 原样/原厂脸未动/背景要素齐/企鹅唯一有脸角色/零新增文字/闪片封壳内/光影一体/1:1 |
+
+### 本单沉淀
+- **"baby" 拆雷前移**：中文稿阶段"小企鹅雏(baby)"即改 penguin chicks，禁词规避从"落盘后 grep"提前到"起稿时"，实测零 400。
+- **edits 背景替换保真句式已三连验证**（santa50/funbox47/funbox51）：[Task] edit-keep + [Keep unchanged] 逐件像素级描形 + [New background] 站位重申 + [Strict rules] 件数锁/零文字/闪片封壳——同型需求直接套骨架。
+- 提示词存 prompts/funbox51_promo_bg.txt；中文稿 prompts/funbox51_draft_cn.md（含三案+钦定记录）。

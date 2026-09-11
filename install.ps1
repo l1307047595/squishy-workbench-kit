@@ -47,16 +47,28 @@ $skillDirs = @(Get-ChildItem (Join-Path $RepoDir "skills") -Directory)
 if ($skillDirs.Count -eq 0) { Fail "no skill folders found under $(Join-Path $RepoDir 'skills')" }
 
 # ---------------------------------------------------------------- 1. workbench tree
-foreach ($d in @("ref", "prompts", "outputs", "config", "scripts", ".workbuddy\memory")) {
+foreach ($d in @("ref", "prompts", "outputs", "config", "scripts", "memory")) {
     $p = Join-Path $WorkbenchDir $d
     if (-not (Test-Path $p)) { New-Item -ItemType Directory -Path $p -Force | Out-Null; Say "mkdir  $p" }
 }
 
-# ---------------------------------------------------------------- 2. rules + scripts
+# ---------------------------------------------------------------- 2. rules + scripts + agent entry
 Copy-Item (Join-Path $RepoDir "rules\*.md") $WorkbenchDir -Force
 Say ("rules  synced -> " + (Get-ChildItem (Join-Path $RepoDir "rules") -Filter "*.md").Count + " file(s)")
 Copy-Item (Join-Path $RepoDir "scripts\*.py") (Join-Path $WorkbenchDir "scripts") -Force
 Say ("scripts synced -> " + (Get-ChildItem (Join-Path $RepoDir "scripts") -Filter "*.py").Count + " file(s)")
+
+if (Test-Path (Join-Path $RepoDir "AGENTS.md")) {
+    Copy-Item (Join-Path $RepoDir "AGENTS.md") (Join-Path $WorkbenchDir "AGENTS.md") -Force
+    Say "AGENTS.md copied (agent entry point)"
+}
+$stateDst = Join-Path $WorkbenchDir "STATE.md"
+if (-not (Test-Path $stateDst)) {
+    Copy-Item (Join-Path $RepoDir "STATE.template.md") $stateDst
+    Say "STATE.md created from template (order status board)"
+} else {
+    Say "STATE.md kept (not overwritten)"
+}
 
 # ---------------------------------------------------------------- 3. api config
 $api = Join-Path $WorkbenchDir "config\api.json"
@@ -125,7 +137,7 @@ Write-Host ""
 Say "DONE. next steps:"
 Say "  1. edit $api  -> put YOUR api_key in"
 Say "  2. cd `"$WorkbenchDir`""
-Say "  3. python scripts\generate_hermes.py --check        (zero-cost health check)"
+Say "  3. python scripts\generate.py --check        (zero-cost health check)"
 Say "  4. restart WorkBuddy, then just ask it to write squishy prompts"
 Write-Host ""
 Say "update anytime:  powershell -NoProfile -ExecutionPolicy Bypass -File `"$(Join-Path $RepoDir 'update.ps1')`""

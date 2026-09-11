@@ -3,6 +3,11 @@
   "base_url": "https://direct-api.cangyuansuanli.cn/v1",
   "api_key": "PUT-YOUR-OWN-KEY-HERE",
   "model": "gpt-image-2",
+  "model_allowed": [
+    "gpt-image-2",
+    "gpt-image-2.5-flare",
+    "gpt-image-2.5-sunburst"
+  ],
   "model_locked": true,
   "default_size": "1024x1024",
   "default_quality": "high",

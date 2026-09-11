@@ -1,18 +1,30 @@
 # squishy-workbench-kit
 
-捏捏提示词工作台的分发包。**技能 + 规则库 + 生图脚本**三件套一起发，任何一份缺失都会让技能变成空壳。
+捏捏提示词工作台的分发包。**技能 + 规则库 + 生图脚本 + agent 入口**四件套一起发，任何一份缺失都会让技能变成空壳。
 
 ## 这个包里有什么
 
-| 目录 | 内容 | 是否随 git 更新 |
+| 目录 / 文件 | 内容 | 更新方式 |
 |---|---|---|
-| `skills/` | 两个 WorkBuddy 技能：`squishy-prompt-workbench`（接单主流程）、`prompt-workbench-audit`（工作区体检） | 是 |
-| `rules/` | `identity.md`（身份铁律）、`feedback.md`（F/P 规则沉淀）、`library.md`（通过版案例库） | 是 |
-| `scripts/` | `generate_hermes.py`（中转站生图脚本，含重试/核验/禁变体锁） | 是 |
-| `config/api.example.json` | 中转站配置模板，**key 留空** | 是 |
-| `install.ps1` / `update.ps1` | 一键安装 / 一键更新 | 是 |
-| `config/api.json` | 你自己的 key（每人自备，**禁止提交**） | 否，已 gitignore |
-| 工作区 `ref/ prompts/ outputs/` | 你自己的参考图与产出 | 否，不在仓库里 |
+| `skills/` | 两个 WorkBuddy 技能：`squishy-prompt-workbench`（接单主流程）、`prompt-workbench-audit`（工作区体检） | 目录联接，`git pull` 即时生效 |
+| `rules/` | `identity.md`（身份铁律）、`feedback.md`（F/P 规则库·权威）、`library.md`（通过版案例库） | 复制同步 |
+| `scripts/generate.py` | 生图脚本（重试 / 出图核验 / `_vN` 防覆盖 / 模型白名单 / 路径收敛） | 复制同步 |
+| `AGENTS.md` | agent 进入工作区的第一入口（9 条铁律 + 命令 + 目录） | 复制同步 |
+| `STATE.template.md` | 订单状态板模板（仅首次安装时铺一份） | **个人文件，之后永不覆盖** |
+| `config/api.example.json` | 中转站配置模板，**key 留空** | 复制同步 |
+| `install.ps1` / `update.ps1` | 一键安装 / 一键更新 | 复制同步 |
+
+## 共享 vs 个人（重要）
+
+| 类别 | 文件 | 会不会被更新覆盖 |
+|---|---|---|
+| **共享** | `rules/*.md`、`scripts/*.py`、`AGENTS.md` | **会**，这就是"实时同步"的部分 |
+| **个人** | `memory/`、`STATE.md`、`ref/`、`prompts/`、`outputs/`、`config/api.json` | **永不覆盖**，完全归你自己 |
+
+- **每个人的每日记忆 `memory/*.md` 独立存在，团队更新不会动它。**
+- 共享文件被覆盖前，若本地副本有改动，会自动备份到
+  `%USERPROFILE%\.workbuddy\squishy-workbench-local-backup\<时间戳>\`，不会静默丢东西。
+- 想把个人经验并进团队规则库 → 交给维护者合并进 `rules/feedback.md`；不要自己改 `rules/`（改了会被下次同步覆盖）。
 
 ## 一次性安装
 
@@ -25,10 +37,11 @@ winget install --id Git.Git -e
 ### 2. 克隆仓库
 
 ```powershell
-git clone <仓库地址> D:\skills-repo
+git clone https://github.com/l1307047595/squishy-workbench-kit.git D:\skills-repo
 ```
 
-> 内网/墙内连不上 GitHub 时，用你们公司自建 Git 或 Gitee 的地址；本机已配置 github 镜像重定向的话直接 clone 原地址即可。
+> **私有仓库**：clone 前需要维护者把你加为 Collaborator，否则报 401 / Repository not found。
+> 内网或墙内连不上 GitHub 时，改用自己的镜像或公司 Git 地址。
 
 ### 3. 跑安装脚本
 
@@ -39,14 +52,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
 
 脚本做的事：
 
-1. 建工作区 `D:\squishy-workbench\`（含 `ref/ prompts/ outputs/ config/ scripts/`，以及 `.workbuddy\memory\`）
-2. 把 `rules/` 与 `scripts/` 铺进工作区
-3. 生成 `config/api.json` 模板（**你要自己填 key**）
-4. 在 `%USERPROFILE%\.workbuddy\skills\` 下建**目录联接**指向本仓库的 `skills\*` → 之后 `git pull` 一拉，技能立刻是新版
+1. 建工作区 `D:\squishy-workbench\`（`ref/ prompts/ outputs/ config/ scripts/ memory/`）
+2. 铺 `rules/*.md`、`scripts/*.py`、`AGENTS.md`，首次生成 `STATE.md`
+3. 生成 `config/api.json` 模板（**key 你自己填**）
+4. 在 `%USERPROFILE%\.workbuddy\skills\` 下建**目录联接**指向本仓库的 `skills/*`
+   → 之后 `git pull` 一拉，技能立刻是新版，**永远不用重装**
 5. 把工作区路径写进 `%USERPROFILE%\.workbuddy\squishy-workbench.json`
-6. （可选）注册定时任务，每 30 分钟自动 `git pull` + 同步规则库 → 做到"你改完、同事自动跟上"
+6. （可选）注册定时任务，每 30 分钟自动 `git pull` + 同步共享文件
 
-自定义路径：
+自定义：
 
 ```powershell
 .\install.ps1 -WorkbenchDir "E:\my-workbench" -ScheduleMinutes 15
@@ -58,7 +72,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
 ```powershell
 notepad D:\squishy-workbench\config\api.json
 cd D:\squishy-workbench
-python scripts\generate_hermes.py --check      # 零消耗探活，不出图不扣费
+python scripts\generate.py --check      # 零消耗探活，不出图不扣费
 ```
 
 看到 `[check] OK —— 可以接单` 就成了。
@@ -69,32 +83,45 @@ python scripts\generate_hermes.py --check      # 零消耗探活，不出图不�
 powershell -NoProfile -ExecutionPolicy Bypass -File D:\skills-repo\update.ps1
 ```
 
-做三件事：`git pull` → 覆盖同步 `rules/` 与 `scripts/` → 打印本次变更摘要。
-装了定时任务的话这步是自动的，你什么都不用做。
+`git pull` → 覆盖同步 `rules/` `scripts/` `AGENTS.md`（覆盖前自动备份本地改动）→ 打印变更摘要。
+`memory/`、`STATE.md`、`ref/`、`prompts/`、`outputs/`、`config/api.json` **全程不动**。
+装了定时任务的话这步是自动的。
 
 ## 出图怎么跑
 
 ```powershell
 cd D:\squishy-workbench
-python scripts\generate_hermes.py --prompt-file prompts\<前缀>_main.txt --ref ref\<前缀>_ref.png --endpoint edits --name <前缀>_main --size 1024x1024
+python scripts\generate.py --prompt-file prompts\<前缀>_main.txt --ref ref\<前缀>_ref.png --name <前缀>_main
+
+# 局部修改
+python scripts\generate.py --prompt-file prompts\<前缀>_edit.txt --ref outputs\<图>.png --endpoint edits --name <前缀>_edit
 ```
 
-参数与故障处置见 `skills\squishy-prompt-workbench\SKILL.md`。
+**模型白名单**（`config.model_allowed` 强制，禁一切 `-1k/-2k/-4k` 分辨率变体）：
 
-## 安全约定（重要）
+| 模型 | 用途 |
+|---|---|
+| `gpt-image-2` | 默认，常规套图，保真基线 |
+| `gpt-image-2.5-flare` | 速度/批量：多张连出、快速试错 |
+| `gpt-image-2.5-sunburst` | 精确编辑：edits 局部修改、高保真重做 |
 
-- `config/api.json` 含中转站 key，**已在 .gitignore 中**，永远不要提交，也不要贴进群里
+新模型首用先出 1 张与默认模型对照目检；同任务内不混用。
+
+## 安全约定
+
+- `config/api.json` 含中转站 key，**已在 .gitignore 中**，永远不要提交或贴群
 - 同事各用各的 key、各付各的费
-- `outputs/` 里的出图是个人产物，不进仓库
-- 仓库是**私有的**：里面含价格、店铺、客户偏好等经营信息
+- `outputs/` `ref/` `prompts/` 是个人产物，不进仓库
+- 仓库私有：里面含价格、店铺、客户偏好等经营信息
 
 ## 常见问题
 
 | 现象 | 处置 |
 |---|---|
-| `install.ps1` 报"无法加载文件，未对文件进行数字签名" | 用上面带 `-ExecutionPolicy Bypass` 的完整命令 |
-| 技能没生效 | 确认 `%USERPROFILE%\.workbuddy\skills\` 下有对应目录且是 Junction；不行就重启 WorkBuddy |
-| `python` 不是内部或外部命令 | 改用 WorkBuddy 自带解释器：`C:\Users\<你>\.workbuddy\binaries\python\envs\default\Scripts\python.exe` |
-| 定时任务注册失败（权限不足） | 跳过即可，改为每天手动跑一次 `update.ps1` |
-| 429 `image_queue_full` | 上游饱和，脚本会自动等 60s 重试；别连环轰炸、别换模型绕 |
-| 同事拉到的规则库没更新 | 跑 `update.ps1`（`rules/` 是复制同步，不是链接） |
+| `install.ps1` 报"未对文件进行数字签名" | 用带 `-ExecutionPolicy Bypass` 的完整命令 |
+| 技能没生效 | 确认 `%USERPROFILE%\.workbuddy\skills\` 下是 Junction；不行重启 WorkBuddy |
+| `python` 不是内部或外部命令 | 用 WorkBuddy 自带解释器 `%USERPROFILE%\.workbuddy\binaries\python\envs\default\Scripts\python.exe` |
+| 定时任务注册失败（权限不足） | 跳过，改成每天手动跑一次 `update.ps1` |
+| 429 `image_queue_full` | 上游饱和，脚本自动隔 60s 重试；别连环轰炸、别换模型绕 |
+| 自己改过的共享文件被覆盖了 | 去 `%USERPROFILE%\.workbuddy\squishy-workbench-local-backup\<时间戳>\` 找回 |
+| clone 报 401 / Repository not found | 让维护者把你加进 Collaborators |
