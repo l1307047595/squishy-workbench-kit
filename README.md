@@ -10,7 +10,7 @@
 | 目录 / 文件 | 内容 | 更新方式 |
 |---|---|---|
 | `skills/` | 两个 WorkBuddy 技能：`squishy-prompt-workbench`（接单主流程）、`prompt-workbench-audit`（工作区体检） | 目录联接，`git pull` 即时生效 |
-| `rules/` | `identity.md`（身份铁律）、`feedback.md`（F/P 规则库）、`library.md`（通过版案例库）——**首装播种一次后归个人**：identity 带内容，feedback/library 空文件起步 | **不复制同步，永不覆盖** |
+| `rules/` | 仅 `identity.md`（身份铁律，首装种子）。`feedback.md` / `library.md` **不入仓库**，由 install.ps1 在工作区创建空文件，每人自己积累 | **不复制同步，永不覆盖** |
 | `scripts/generate.py` | 生图脚本（重试 / 出图核验 / `_vN` 防覆盖 / 模型白名单 / 路径收敛） | 复制同步 |
 | `AGENTS.md` | agent 进入工作区的第一入口（9 条铁律 + 命令 + 目录） | 复制同步 |
 | `STATE.template.md` | 订单状态板模板（仅首次安装时铺一份） | **个人文件，之后永不覆盖** |
