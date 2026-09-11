@@ -74,12 +74,13 @@ memory/       每日流水账（历史归档，可选读）
 
 | 类别 | 文件 | 更新方式 |
 |---|---|---|
-| **共享**（`update.ps1` 会覆盖同步） | `rules\{identity,feedback,library}.md` · `scripts\*.py` · `AGENTS.md` | 由仓库统一维护，本地改会被覆盖（覆盖前自动备份到 `%USERPROFILE%\.workbuddy\squishy-workbench-local-backup\<时间戳>\`） |
-| **个人**（`update.ps1` 绝不触碰） | `memory\` · `STATE.md` · `ref\` · `prompts\` · `outputs\` · `config\api.json` | 完全由本人掌握，永不覆盖 |
+| **共享**（`update.ps1` 会覆盖同步） | `scripts\*.py` · `AGENTS.md` | 由仓库统一维护，本地改会被覆盖（覆盖前自动备份到 `%USERPROFILE%\.workbuddy\squishy-workbench-local-backup\<时间戳>\`） |
+| **个人**（`update.ps1` 绝不触碰） | `identity.md` · `feedback.md` · `library.md` · `memory\` · `STATE.md` · `ref\` · `prompts\` · `outputs\` · `config\api.json` | 完全由本人掌握，永不覆盖。其中 `identity.md` 首装带内容，`feedback.md` / `library.md` 首装为空文件、自己从零积累 |
 
 推论：
 - **你的每日记忆 `memory\*.md` 是你的，别人拉更新不会动它。**
-- 想让某条经验进团队规则库 → 说一声，由维护者合并进 `rules/feedback.md` 并 push，而不是自己改 `rules/`（改了也会被下次同步覆盖）。
+- **规则三件套（identity/feedback/library）也是你的**：首装播种一次后就归本人，更新永远不覆盖；经验直接写进自己工作区的 `feedback.md` / `library.md` 即可。
+- 团队级的新铁律 → 说一声，由维护者改仓库里的 `identity.md` / `AGENTS.md`（共享）并 push；同事下次 `update.ps1` 拿到的是 `AGENTS.md`（`identity.md` 不会自动更新，需手动对照）。
 - 不要在仓库目录里直接改文件 —— 仓库是"只读源"，个人改动写进工作区。
 
 ## 状态板纪律（并行会话必读）
@@ -93,4 +94,4 @@ memory/       每日流水账（历史归档，可选读）
 
 ## 交接说明
 
-本包复刻自实际生产工作区。差异说明见 `README.md`。规则与流程与原工作区完全一致；`rules/` 由 `update.ps1` 复制同步，`skills/` 是目录联接，`git pull` 即更新。
+本包复刻自实际生产工作区。差异说明见 `README.md`。规则与流程与原工作区完全一致；`scripts\` 与 `AGENTS.md` 由 `update.ps1` 复制同步，`rules/` 三件套首装播种后归个人，`skills/` 是目录联接，`git pull` 即更新。

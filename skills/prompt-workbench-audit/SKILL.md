@@ -32,11 +32,13 @@ description: 提示词工作台「工作区体检」技能——只读巡检一�
 | `<WB>\config\api.json` | 中转站配置（含 key，**读结构时必须脱敏**） | 个人 |
 | `<WB>\scripts\generate.py` | 生图脚本 | 共享（同步） |
 | `<WB>\AGENTS.md` | agent 入口 | 共享（同步） |
-| `<WB>\identity.md` `feedback.md` `library.md` | 规则库三件套 | 共享（同步） |
+| `<WB>\identity.md` | 身份铁律（首装带内容） | **个人（永不覆盖）** |
+| `<WB>\feedback.md` | F/P 规则沉淀（首装为空，自己积累） | **个人（永不覆盖）** |
+| `<WB>\library.md` | 通过版案例库（首装为空，自己积累） | **个人（永不覆盖）** |
 | `<WB>\STATE.md` | 订单状态板 | **个人（永不覆盖）** |
 | `<WB>\memory\` | 每日日志 `YYYY-MM-DD.md` | **个人（永不覆盖）** |
 
-> 体检时**不要**把"共享 vs 个人"搞反：`memory\` 与 `STATE.md` 属于个人，**不算"与仓库不一致"**。
+> 体检时**不要**把"共享 vs 个人"搞反：`identity.md`、`feedback.md`、`library.md`、`memory\`、`STATE.md` 均属于个人，**不算"与仓库不一致"**。
 
 ## Process（6 步，全程只读）
 
@@ -110,9 +112,9 @@ Get-ChildItem $wb -Recurse -File |
 
 ### 步骤 5 · 共享文件是否落后于团队仓库
 
-若工作区由 kit 安装：`rules/` 与 `scripts/` 是 `update.ps1` 复制同步的。比对工作区里 `identity.md` / `feedback.md` / `library.md` / `scripts\generate.py` 的内容与仓库 `rules/` `scripts/` 是否一致 → 报告落后情况，提示跑 `update.ps1`。
+若工作区由 kit 安装：只有 `scripts/` 与 `AGENTS.md` 是 `update.ps1` 复制同步的共享文件。比对工作区里 `scripts\generate.py` 与 `AGENTS.md` 的内容与仓库 `scripts/` `AGENTS.md` 是否一致 → 报告落后情况，提示跑 `update.ps1`。
 
-> ⚠️ **只有共享文件才算"落后"**。`memory\`、`STATE.md` 与仓库不同是正常的，不要报成问题。
+> ⚠️ **只有共享文件才算"落后"**。`identity.md`、`feedback.md`、`library.md`、`memory\`、`STATE.md` 均为个人文件，与仓库不同是正常的，不要报成问题。
 
 ### 步骤 6 · 风险项扫描
 

@@ -52,12 +52,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -WorkbenchDir 
 ### install.ps1 干了些啥
 
 1. 建工作区目录树：`ref/ prompts/ outputs/ config/ scripts/ memory/`
-2. 把 `rules/*.md`、`scripts/*.py`、`AGENTS.md`、`STATE.md`（模板播种）复制进工作区
-3. 生成 `config\api.json`（模板形态，**key 是空的，要自己填**）
-4. 在 `%USERPROFILE%\.workbuddy\skills\` 下建**目录联接**指向仓库的 `skills\*`
+2. 播种规则三件套（**个人文件**）：`identity.md` 带完整内容；`feedback.md` / `library.md` **空文件起步**，你自己的经验自己记 —— 之后团队更新**永不覆盖**这三个文件
+3. 把 `scripts/*.py`、`AGENTS.md` 复制进工作区（共享，会被更新同步）
+4. 生成 `config\api.json`（模板形态，**key 是空的，要自己填**）
+5. 在 `%USERPROFILE%\.workbuddy\skills\` 下建**目录联接**指向仓库的 `skills\*`
    → 这一步是「实时更新」的关键：`git pull` 一拉，技能当场生效，**不用重装**
-5. 写 `%USERPROFILE%\.workbuddy\squishy-workbench.json`（本机路径映射，技能靠它找到你的工作区）
-6. 可选：注册计划任务，每 N 分钟自动 `git pull` + 同步规则
+6. 写 `%USERPROFILE%\.workbuddy\squishy-workbench.json`（本机路径映射，技能靠它找到你的工作区）
+7. 可选：注册计划任务，每 N 分钟自动 `git pull` + 同步规则
 
 > 如果本机 `skills\` 下已有**同名真实文件夹**，install 会先把它改名成 `xxx.bak-时间戳` 再建联接，不会删你东西。
 
@@ -115,9 +116,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\update.ps1
 
 | 会同步（共享） | **绝不触碰（你自己的）** |
 |---|---|
-| `rules/*.md`（identity/feedback/library） | `memory/`（你的日志） |
-| `scripts/*.py` | `STATE.md`（你的订单状态板） |
-| `AGENTS.md` | `ref/` `prompts/` `outputs/`（你的素材与成品） |
+| `scripts/*.py` | `identity.md`（首装带内容，之后归你） |
+| `AGENTS.md` | `feedback.md`、`library.md`（首装为空，你自己积累） |
+| | `memory/`（你的日志） |
+| | `STATE.md`（你的订单状态板） |
+| | `ref/` `prompts/` `outputs/`（你的素材与成品） |
 | | `config/api.json`（你的 key） |
 
 - 覆盖共享文件前会做 SHA256 比对：**你本地改过** → 先备份到
@@ -136,4 +139,4 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\update.ps1
 | 生图报 401/无 key | 忘了第 4 步，填 `config\api.json` |
 | `update.ps1` 里 `git pull` 失败 | 无妨，会继续同步本地仓库内容；查网络或凭证 |
 | 计划任务注册失败 | 没用管理员跑；改用手动更新，或管理员权限重跑 install |
-| 规则文件被覆盖了 | 说明你没改过它；如果你改过，先去 `squishy-workbench-local-backup\` 找备份 |
+| 自己改的 `scripts/*.py` 或 `AGENTS.md` 被覆盖 | 规则三件套永远不会被覆盖；共享文件改前有备份，去 `squishy-workbench-local-backup\` 找回 |

@@ -34,13 +34,13 @@ description: 捏捏提示词工作台核心技能，专为捏捏/解压/感官�
 | 每日工作日志（个人） | `<WB>\memory\` |
 | 工作区巡检 | 用 `prompt-workbench-audit` 技能 |
 
-**为什么 `scripts/` 是复制而不是链接**：`generate.py` 用 `Path(__file__)` 反推工作区根（`ROOT = 脚本上一级目录`），并把读写路径强制收敛到 `ROOT` 之内。若用链接，`resolve()` 会跟到仓库目录，导致 `ref/`、`outputs/` 被判越界而拒绝执行。故脚本必须真实落在 `<WB>\scripts\`。规则文件（`*.md`）无此问题，由 `update.ps1` 复制同步。
+**为什么 `scripts/` 是复制而不是链接**：`generate.py` 用 `Path(__file__)` 反推工作区根（`ROOT = 脚本上一级目录`），并把读写路径强制收敛到 `ROOT` 之内。若用链接，`resolve()` 会跟到仓库目录，导致 `ref/`、`outputs/` 被判越界而拒绝执行。故脚本必须真实落在 `<WB>\scripts\`。规则三件套无此问题——它们是**个人文件**，首装播种一次后归本人。
 
 ## 共享 vs 个人（不得混写）
 
-- **共享文件**（仓库侧 `rules/*.md`、`scripts/*.py`、`AGENTS.md`）：由仓库统一维护，本地改动会被下次 `update.ps1` 覆盖（覆盖前自动备份）。**不要直接改仓库目录里的文件**。
-- **个人文件**（`memory\`、`STATE.md`、`ref\`、`prompts\`、`outputs\`、`config\api.json`）：团队更新**永不触碰**。每日记忆 `memory\*.md` 各人独立、互不覆盖。
-- 新经验要进团队规则库 → 写进本人 `feedback.md` 的同时，明确告知用户需由维护者合并进仓库 `rules/feedback.md`。
+- **共享文件**（仓库侧 `scripts/*.py`、`AGENTS.md`）：由仓库统一维护，本地改动会被下次 `update.ps1` 覆盖（覆盖前自动备份）。**不要直接改仓库目录里的文件**。
+- **个人文件**（`identity.md`、`feedback.md`、`library.md`、`memory\`、`STATE.md`、`ref\`、`prompts\`、`outputs\`、`config\api.json`）：团队更新**永不触碰**。规则三件套首装播种后归本人（identity 带内容，feedback/library 空文件起步）；每日记忆 `memory\*.md` 各人独立、互不覆盖。
+- 新经验 → 直接写进本人工作区的 `feedback.md`；只有确认为团队级铁律的，才由维护者改仓库的 `AGENTS.md`（共享）并 push。
 
 ## 权威优先级（冲突时按此判）
 
@@ -96,7 +96,7 @@ description: 捏捏提示词工作台核心技能，专为捏捏/解压/感官�
 8. **P3 自查**（交付前必跑）：①禁用词（提示词与图内文字双向扫）②文字全横排 ③文字层数达标 ④not food 声明 ⑤静态件 UNDEFORMED ⑥徽章捏压四件套 ⑦`//` 结尾唯一 ⑧**画面有无提示词未声明的元素**（模型自加箭头/表情/吊牌高发）。能看图时先自己目检一轮再交付。
 9. **交付**：用 `present_files` 卡片给 `<WB>\outputs\` 内文件（工作区外路径卡片不渲染），配**一行简短说明**，不要表格/长段罗列。
 10. **入库与状态**：通过版中英对照写 `<WB>\library.md`；纠正写 `<WB>\feedback.md`；**更新 `STATE.md`**（改状态、勾掉待办；只改计数行，勿重写整个 header）；当日追加 `<WB>\memory\YYYY-MM-DD.md`（个人文件）。
-11. **推送团队更新**：若改动的是需要进仓库的 `rules/`，提示用户跑 `update.ps1` 并 push，否则同事拿不到新规则。
+11. **团队级沉淀**：规则三件套是个人文件，日常经验直接写本人 `feedback.md` / `library.md` 即可；只有确认要进团队共享层的铁律（改 `AGENTS.md` 或仓库侧 `identity.md` 母本），才提示用户 commit + push。
 
 ## 命名规范（永久）
 

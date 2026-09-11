@@ -3,12 +3,14 @@ install.ps1 - one-shot setup for squishy-workbench-kit (Windows, PowerShell 5.1 
 
 What it does
   1. creates the local workbench folder tree
-  2. copies rules\*.md and scripts\*.py into the workbench
-  3. creates workbench config\api.json from the template (if missing)
-  4. creates directory junctions under %USERPROFILE%\.workbuddy\skills\ pointing at this repo's skills\*
+  2. seeds rules PERSONALLY: identity.md with content, feedback.md / library.md empty
+     (seeded once only - later updates NEVER overwrite them)
+  3. copies scripts\*.py into the workbench (shared, updated by update.ps1)
+  4. creates workbench config\api.json from the template (if missing)
+  5. creates directory junctions under %USERPROFILE%\.workbuddy\skills\ pointing at this repo's skills\*
      -> after this, `git pull` updates the skills instantly, nothing to reinstall
-  5. writes %USERPROFILE%\.workbuddy\squishy-workbench.json (machine-local path map)
-  6. optionally registers a scheduled task that auto-runs update.ps1
+  6. writes %USERPROFILE%\.workbuddy\squishy-workbench.json (machine-local path map)
+  7. optionally registers a scheduled task that auto-runs update.ps1
 
 Usage
   cd D:\skills-repo
@@ -52,9 +54,26 @@ foreach ($d in @("ref", "prompts", "outputs", "config", "scripts", "memory")) {
     if (-not (Test-Path $p)) { New-Item -ItemType Directory -Path $p -Force | Out-Null; Say "mkdir  $p" }
 }
 
-# ---------------------------------------------------------------- 2. rules + scripts + agent entry
-Copy-Item (Join-Path $RepoDir "rules\*.md") $WorkbenchDir -Force
-Say ("rules  synced -> " + (Get-ChildItem (Join-Path $RepoDir "rules") -Filter "*.md").Count + " file(s)")
+# ---------------------------------------------------------------- 2. rules (PERSONAL: seed once, never overwrite)
+# identity.md ships WITH content; feedback.md / library.md start EMPTY (each person's own log).
+$rulesSrc = Join-Path $RepoDir "rules"
+$idDst = Join-Path $WorkbenchDir "identity.md"
+if (-not (Test-Path $idDst)) {
+    Copy-Item (Join-Path $rulesSrc "identity.md") $idDst
+    Say "identity.md seeded (with content)"
+} else {
+    Say "identity.md kept (personal, not overwritten)"
+}
+foreach ($n in @("feedback.md", "library.md")) {
+    $p = Join-Path $WorkbenchDir $n
+    if (-not (Test-Path $p)) {
+        Set-Content -LiteralPath $p -Value "" -Encoding UTF8
+        Say "$n created EMPTY (your own rule/case log, fill it as you work)"
+    } else {
+        Say "$n kept (personal, not overwritten)"
+    }
+}
+
 Copy-Item (Join-Path $RepoDir "scripts\*.py") (Join-Path $WorkbenchDir "scripts") -Force
 Say ("scripts synced -> " + (Get-ChildItem (Join-Path $RepoDir "scripts") -Filter "*.py").Count + " file(s)")
 

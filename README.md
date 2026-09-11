@@ -10,7 +10,7 @@
 | 目录 / 文件 | 内容 | 更新方式 |
 |---|---|---|
 | `skills/` | 两个 WorkBuddy 技能：`squishy-prompt-workbench`（接单主流程）、`prompt-workbench-audit`（工作区体检） | 目录联接，`git pull` 即时生效 |
-| `rules/` | `identity.md`（身份铁律）、`feedback.md`（F/P 规则库·权威）、`library.md`（通过版案例库） | 复制同步 |
+| `rules/` | `identity.md`（身份铁律）、`feedback.md`（F/P 规则库）、`library.md`（通过版案例库）——**首装播种一次后归个人**：identity 带内容，feedback/library 空文件起步 | **不复制同步，永不覆盖** |
 | `scripts/generate.py` | 生图脚本（重试 / 出图核验 / `_vN` 防覆盖 / 模型白名单 / 路径收敛） | 复制同步 |
 | `AGENTS.md` | agent 进入工作区的第一入口（9 条铁律 + 命令 + 目录） | 复制同步 |
 | `STATE.template.md` | 订单状态板模板（仅首次安装时铺一份） | **个人文件，之后永不覆盖** |
@@ -22,13 +22,14 @@
 
 | 类别 | 文件 | 会不会被更新覆盖 |
 |---|---|---|
-| **共享** | `rules/*.md`、`scripts/*.py`、`AGENTS.md` | **会**，这就是"实时同步"的部分 |
-| **个人** | `memory/`、`STATE.md`、`ref/`、`prompts/`、`outputs/`、`config/api.json` | **永不覆盖**，完全归你自己 |
+| **共享** | `scripts/*.py`、`AGENTS.md` | **会**，这就是"实时同步"的部分 |
+| **个人** | `identity.md`、`feedback.md`、`library.md`、`memory/`、`STATE.md`、`ref/`、`prompts/`、`outputs/`、`config/api.json` | **永不覆盖**，完全归你自己 |
 
+- **规则三件套（identity/feedback/library）是个人文件**：`identity.md` 首装带完整内容，`feedback.md` 与 `library.md` 首装为空文件，每个人的规则与案例自己从零积累；团队更新不会动它们。
 - **每个人的每日记忆 `memory/*.md` 独立存在，团队更新不会动它。**
 - 共享文件被覆盖前，若本地副本有改动，会自动备份到
   `%USERPROFILE%\.workbuddy\squishy-workbench-local-backup\<时间戳>\`，不会静默丢东西。
-- 想把个人经验并进团队规则库 → 交给维护者合并进 `rules/feedback.md`；不要自己改 `rules/`（改了会被下次同步覆盖）。
+- 团队级新铁律 → 交给维护者改仓库里的 `AGENTS.md`（共享）并 push；个人经验直接写自己工作区的 `feedback.md` / `library.md`，不会被覆盖。
 
 ## 一次性安装
 
@@ -57,7 +58,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
 脚本做的事：
 
 1. 建工作区 `D:\squishy-workbench\`（`ref/ prompts/ outputs/ config/ scripts/ memory/`）
-2. 铺 `rules/*.md`、`scripts/*.py`、`AGENTS.md`，首次生成 `STATE.md`
+2. 播种规则三件套（`identity.md` 带内容，`feedback.md`/`library.md` 空文件，**之后永不覆盖**）、铺 `scripts/*.py` 与 `AGENTS.md`，首次生成 `STATE.md`
 3. 生成 `config/api.json` 模板（**key 你自己填**）
 4. 在 `%USERPROFILE%\.workbuddy\skills\` 下建**目录联接**指向本仓库的 `skills/*`
    → 之后 `git pull` 一拉，技能立刻是新版，**永远不用重装**
@@ -87,8 +88,8 @@ python scripts\generate.py --check      # 零消耗探活，不出图不扣费
 powershell -NoProfile -ExecutionPolicy Bypass -File D:\skills-repo\update.ps1
 ```
 
-`git pull` → 覆盖同步 `rules/` `scripts/` `AGENTS.md`（覆盖前自动备份本地改动）→ 打印变更摘要。
-`memory/`、`STATE.md`、`ref/`、`prompts/`、`outputs/`、`config/api.json` **全程不动**。
+`git pull` → 覆盖同步 `scripts/` `AGENTS.md`（覆盖前自动备份本地改动）→ 打印变更摘要。
+`identity.md`、`feedback.md`、`library.md`、`memory/`、`STATE.md`、`ref/`、`prompts/`、`outputs/`、`config/api.json` **全程不动**。
 装了定时任务的话这步是自动的。
 
 ## 出图怎么跑

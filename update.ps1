@@ -3,8 +3,10 @@ update.ps1 - pull the latest kit and sync ONLY the shared files into the local w
 
 Scope (this is the whole point of the script)
   SYNCED (shared, overwritten):
-      rules\*.md    scripts\*.py    AGENTS.md
+      scripts\*.py    AGENTS.md
   NEVER TOUCHED (personal - each person keeps their own):
+      identity.md              seeded once by install.ps1, yours afterwards
+      feedback.md library.md   start EMPTY, your own rule/case accumulation
       memory\                  your daily logs / personal memory
       STATE.md                 your own order board
       ref\ prompts\ outputs\   your own assets and products
@@ -73,18 +75,8 @@ if (-not $remote) {
 }
 
 # ---------------------------------------------------------------- 2. sync shared files only
-$nRules = 0
-$rulesSrc = Join-Path $RepoDir "rules"
-if (Test-Path $rulesSrc) {
-    Get-ChildItem $rulesSrc -Filter "*.md" -File | ForEach-Object {
-        $dst = Join-Path $wb $_.Name
-        Backup-IfChanged $_.FullName $dst
-        Copy-Item -LiteralPath $_.FullName -Destination $dst -Force
-        $nRules++
-    }
-}
-Say "rules   synced -> $nRules file(s)"
-
+# NOTE: rules\*.md (identity/feedback/library) are PERSONAL since 2026-09-11:
+#       seeded once by install.ps1, never overwritten here.
 $nScripts = 0
 $scriptsSrc = Join-Path $RepoDir "scripts"
 if (Test-Path $scriptsSrc) {
@@ -121,7 +113,7 @@ Write-Host ""
 $dirty = (& git -C $RepoDir status --porcelain) 2>$null
 if ($dirty) { Warn "repo has local changes - do not edit files inside the repo, they will block future pulls" }
 
-Say "personal files untouched: memory\  STATE.md  ref\  prompts\  outputs\  config\api.json"
+Say "personal files untouched: identity.md  feedback.md  library.md  memory\  STATE.md  ref\  prompts\  outputs\  config\api.json"
 if ($script:backupRoot) { Say "backups written this run: $script:backupRoot" }
 if (-not $pullOk) { Warn "REMINDER: this run used the local repo copy (pull failed) - synced files may be stale." }
-Say "done. skills are live (junction); shared rules/scripts/AGENTS refreshed."
+Say "done. skills are live (junction); shared scripts/AGENTS refreshed; rules and personal files untouched."
